@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protected Page</title>
+    <script>
+        const CORRECT_PASSWORD = 'password';  // Change 'mypassword' to your desired password
+
+        function setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + (days*24*60*60*1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for(let i=0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function checkAccess() {
+            const accessCookie = getCookie('access_granted');
+            if (!accessCookie) {
+                let password = prompt("Enter password for access:");
+                if (password === CORRECT_PASSWORD) {
+                    setCookie('access_granted', true, 30);  // Set cookie for 30 days
+                    alert('Access granted!');
+                } else {
+                    alert('Incorrect password.');
+                    window.location.href = 'about:blank';  // Redirect elsewhere or block the page
+                }
+            }
+        }
+
+        window.onload = checkAccess;
+    </script>
+</head>
+<body>
+    <h1>Welcome to the Protected Page</h1>
+    <p>This page is only accessible by you on this computer.</p>
+</body>
+</html>
